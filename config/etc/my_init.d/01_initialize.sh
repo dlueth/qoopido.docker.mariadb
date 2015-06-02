@@ -2,11 +2,10 @@
 
 files=($(find /app/config -type f))
 
-for path in "${files[@]}"
+for source in "${files[@]}"
 do
 	pattern="\.DS_Store"
-	source=${path/\./}
-	target=${path/\/app\/config/}
+	target=${source/\/app\/config/}
 	
 	if [[ ! $target =~ $pattern ]]; then
 		if [[ -f $target ]]; then
@@ -16,6 +15,8 @@ do
 		echo "[link] \"$source\" to \"$target\"" && mkdir -p $(dirname "${target}") && ln -s $source $target
 	fi
 done
+
+mkdir -p /app/mariadb
 
 if [[ ! -d /app/mariadb/mysql ]]; then
 	rm -rf /var/lib/mysql
