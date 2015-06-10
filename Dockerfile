@@ -22,10 +22,11 @@ MAINTAINER Dirk Lüth <info@qoopido.com>
 	ADD config /config
 	RUN chmod +x /configure.sh && \
 		chmod 755 /configure.sh
-	#RUN /configure.sh
 	RUN /configure.sh && \
 		chmod +x /etc/my_init.d/*.sh && \
-		chmod 755 /etc/my_init.d/*.sh
+		chmod 755 /etc/my_init.d/*.sh && \
+		chmod +x /etc/service/mariadb/run && \
+		chmod 755 /etc/service/mariadb/run
 
 # install packages
 	RUN apt-get update && \
@@ -35,7 +36,6 @@ MAINTAINER Dirk Lüth <info@qoopido.com>
 	ADD app /app
 	RUN mkdir -p /app/mariadb && \
 		mkdir -p /app/logs/mariadb
-	
 	
 # cleanup
 	RUN apt-get clean && \
