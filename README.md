@@ -34,3 +34,5 @@ docker exec -i -t "mariadb" /bin/bash
 
 # Project specific configuration #
 Any files under ```/app/config/mariadb``` will be symlinked into the container's filesystem beginning at ```/etc/mysql```. This can be used to overwrite the container's default maria configuration with a custom, project specific configuration.
+
+This container will create a file named ```dump.sql``` in ```./mariadb``` on first execution and will export a fresh dump whenever the container gets stopped. If the file exists it will get imported when the container is started. Both import and export will take some time but have major advantages regarding git or svn versioning. For bigger databases please make sure to add ```-t 600``` option (adjust numeric value in seconds accordingly) to ensure the dump can be exported successfully.
