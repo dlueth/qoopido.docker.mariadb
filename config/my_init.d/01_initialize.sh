@@ -19,20 +19,41 @@ done
 mkdir -p /app/mariadb
 mkdir -p /app/logs/mariadb
 
-if [[ ! -d /app/mariadb/mysql ]]; then
+if [[ ! -f /app/mariadb/dump.sql ]]; then
+	echo "    Initializing new database"
+	
 	/usr/bin/mysql_install_db > /dev/null 2>&1
-	/usr/bin/mysqld_safe > /dev/null 2>&1 &
+	/usr/bin/mysqld_safe --skip-syslog --skip-networking > /dev/null 2>&1 &
 
 	RET=1
 	while [[ RET -ne 0 ]]; do
-		sleep 5
+		sleep 1
 		/usr/bin/mysql -uroot -e "status" > /dev/null 2>&1
 		RET=$?
 	done
 	
 	/usr/bin/mysql -uroot -e "CREATE USER 'admin'@'%' IDENTIFIED BY 'fyoDBafo'"
 	/usr/bin/mysql -uroot -e "GRANT ALL PRIVILEGES ON *.* TO 'admin'@'%' WITH GRANT OPTION"
+	/usr/bin/mysqldump -uroot --hex-blob --routines --triggers --skip-lock-tables --all-databases > /app/mariadb/dump.sql
 	/usr/bin/mysqladmin -uroot shutdown
+	
+	echo "    successfully initialized new database"
+else
+	echo "    Importing existing database"
+	
+	/usr/bin/mysqld_safe --skip-syslog --skip-networking > /dev/null 2>&1 &
+	
+	RET=1
+	while [[ RET -ne 0 ]]; do
+		sleep 1
+		/usr/bin/mysql -uroot -e "status" > /dev/null 2>&1
+		RET=$?
+	done
+	
+	/usr/bin/mysql -uroot < /app/mariadb/dump.sql
+	/usr/bin/mysqladmin -uroot shutdown
+	
+	echo "    successfully imported existing database"
 fi
 
 # Tweaks to give MySQL write permissions to the app
