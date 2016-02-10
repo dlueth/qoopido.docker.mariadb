@@ -30,6 +30,8 @@ MAINTAINER Dirk Lüth <info@qoopido.com>
 
 # install packages
 	RUN apt-get update && \
+		apt-get -qy upgrade && \
+		apt-get -qy dist-upgrade && \
 		apt-get install -qy mariadb-server
 
 # add default /app directory
