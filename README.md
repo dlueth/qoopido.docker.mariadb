@@ -1,6 +1,6 @@
 # Build container #
 ```
-docker build -t qoopido/mariadb .
+docker build -t qoopido/mariadb:1.0.5 .
 ```
 
 # Run container manually ... #
