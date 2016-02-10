@@ -35,7 +35,6 @@ MAINTAINER Dirk Lüth <info@qoopido.com>
 		apt-get install -qy mariadb-server
 
 # add default /app directory
-	ADD app /app
 	RUN mkdir -p /app/mariadb && \
 		mkdir -p /app/logs/mariadb
 	
