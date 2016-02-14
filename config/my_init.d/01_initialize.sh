@@ -1,20 +1,23 @@
 #!/bin/bash
 
-files=($(find /app/config/mariadb -type f))
+if [ -d /app/config/mariadb ]
+then
+	files=($(find /app/config/mariadb -type f))
 
-for source in "${files[@]}" 
-do
-	pattern="\.DS_Store"
-	target=${source/\/app\/config\/mariadb/\/etc\/mysql}
-	
-	if [[ ! $target =~ $pattern ]]; then
-		if [[ -f $target ]]; then
-			echo "    Removing \"$target\"" && rm -rf $target
+	for source in "${files[@]}"
+	do
+		pattern="\.DS_Store"
+		target=${source/\/app\/config\/mariadb/\/etc\/mysql}
+
+		if [[ ! $target =~ $pattern ]]; then
+			if [[ -f $target ]]; then
+				echo "    Removing \"$target\"" && rm -rf $target
+			fi
+
+			echo "    Linking \"$source\" to \"$target\"" && mkdir -p $(dirname "${target}") && ln -s $source $target
 		fi
-		
-		echo "    Linking \"$source\" to \"$target\"" && mkdir -p $(dirname "${target}") && ln -s $source $target
-	fi
-done
+	done
+fi
 
 mkdir -p /app/mariadb
 mkdir -p /app/logs/mariadb
