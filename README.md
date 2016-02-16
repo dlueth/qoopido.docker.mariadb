@@ -13,7 +13,7 @@ project root
   - logs
 ```
 
-# Example docker_compose.yaml #
+# Example docker-compose.yaml #
 ```
 db:
   image: qoopido/mariadb:latest
