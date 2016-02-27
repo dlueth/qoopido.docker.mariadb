@@ -35,13 +35,14 @@ MAINTAINER Dirk Lüth <info@qoopido.com>
 		apt-get install -qy mariadb-server
 
 # add default /app directory
-	RUN mkdir -p /app/mariadb && \
-		mkdir -p /app/logs/mariadb
+	RUN mkdir -p /app/data/logs && \
+		mkdir -p /app/data/database && \
+		mkdir -p /app/config
 	
 # cleanup
 	RUN apt-get clean && \
 		rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* /configure.sh
 
 # finalize
-	VOLUME ["/app/mariadb", "/app/logs", "/app/config"]
+	VOLUME ["/app/data", "/app/config"]
 	EXPOSE 3306

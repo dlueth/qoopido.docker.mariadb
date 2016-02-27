@@ -1,13 +1,13 @@
 #!/bin/bash
 
-if [ -d /app/config/mariadb ]
+if [ -d /app/config ]
 then
-	files=($(find /app/config/mariadb -type f))
+	files=($(find /app/config -type f))
 
 	for source in "${files[@]}"
 	do
 		pattern="\.DS_Store"
-		target=${source/\/app\/config\/mariadb/\/etc\/mysql}
+		target=${source/\/app\/config/\/etc\/mysql}
 
 		if [[ ! $target =~ $pattern ]]; then
 			if [[ -f $target ]]; then
@@ -19,10 +19,11 @@ then
 	done
 fi
 
-mkdir -p /app/mariadb
-mkdir -p /app/logs/mariadb
+mkdir -p /app/data/logs
+mkdir -p /app/data/database
+mkdir -p /app/config
 
-if [[ ! -f /app/mariadb/dump.sql ]]; then
+if [[ ! -f /app/data/database/dump.sql ]]; then
 	echo "    Initializing new database"
 	
 	/usr/bin/mysql_install_db > /dev/null 2>&1
@@ -37,7 +38,7 @@ if [[ ! -f /app/mariadb/dump.sql ]]; then
 	
 	/usr/bin/mysql -uroot -e "CREATE USER 'admin'@'%' IDENTIFIED BY 'fyoDBafo'"
 	/usr/bin/mysql -uroot -e "GRANT ALL PRIVILEGES ON *.* TO 'admin'@'%' WITH GRANT OPTION"
-	/usr/bin/mysqldump -uroot --hex-blob --routines --triggers --skip-lock-tables --all-databases > /app/mariadb/dump.sql
+	/usr/bin/mysqldump -uroot --hex-blob --routines --triggers --skip-lock-tables --all-databases > /app/data/database/dump.sql
 	/usr/bin/mysqladmin -uroot shutdown
 	
 	echo "    successfully initialized new database"
@@ -53,7 +54,7 @@ else
 		RET=$?
 	done
 	
-	/usr/bin/mysql -uroot < /app/mariadb/dump.sql
+	/usr/bin/mysql -uroot < /app/data/database/dump.sql
 	/usr/bin/mysqladmin -uroot shutdown
 	
 	echo "    successfully imported existing database"
