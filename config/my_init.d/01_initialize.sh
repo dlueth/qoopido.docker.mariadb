@@ -1,6 +1,6 @@
 #!/bin/bash
 
-UP="/etc/mysql/up.sh"
+UP="/app/config/up.sh"
 
 if [ -d /app/config ]
 then
@@ -64,7 +64,8 @@ fi
 
 if [ -f $UP ]
 then
-	 chmod +x $UP && chmod 755 $UP && eval $UP;
+	echo "    Running startup script /app/config/up.sh"
+	chmod +x $UP && chmod 755 $UP && eval $UP;
 fi
 
 # Tweaks to give MySQL write permissions to the app
