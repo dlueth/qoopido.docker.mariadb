@@ -5,7 +5,7 @@ dump()
 	echo "    Exporting existing database"
 	
 	/usr/bin/mysqldump -uroot --hex-blob --routines --triggers --all-databases > /tmp/mariadb.sql
-	mv /tmp/mariadb.sql /app/mariadb/dump.sql
+	mv /tmp/mariadb.sql /app/data/database/dump.sql
  	/usr/bin/mysqladmin -uroot shutdown
 	
 	echo "    Successfully exported existing database"
