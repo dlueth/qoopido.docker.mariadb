@@ -1,5 +1,7 @@
 #!/bin/bash
 
+UP="/etc/mysql/up.sh"
+
 if [ -d /app/config ]
 then
 	files=($(find /app/config -type f))
@@ -58,6 +60,11 @@ else
 	/usr/bin/mysqladmin -uroot shutdown
 	
 	echo "    successfully imported existing database"
+fi
+
+if [ -f $UP ]
+then
+	 chmod +x $UP && chmod 755 $UP && eval $UP;
 fi
 
 # Tweaks to give MySQL write permissions to the app

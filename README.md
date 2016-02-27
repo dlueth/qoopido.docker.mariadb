@@ -44,3 +44,5 @@ Both im- and export will take some time but have major advantages regarding git 
 
 # Configuration #
 Any files under ```/app/config``` will be symlinked into the container's filesystem beginning at ```/etc/mysql```. This can be used to overwrite the container's default maria configuration with a custom, project specific configuration.
+
+If you need a custom shell script to be run on start or stop (e.g. to set symlinks) you can do so by creating the file ```/app/config/up.sh``` or ```/app/config/down.sh```.

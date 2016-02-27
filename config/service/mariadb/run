@@ -1,7 +1,9 @@
 #!/bin/bash
 
-dump()
+down()
 {
+	local DOWN="/etc/mysql/down.sh"
+
 	echo "    Exporting existing database"
 	
 	/usr/bin/mysqldump -uroot --hex-blob --routines --triggers --all-databases > /tmp/mariadb.sql
@@ -9,10 +11,15 @@ dump()
  	/usr/bin/mysqladmin -uroot shutdown
 	
 	echo "    Successfully exported existing database"
-	
+
+    if [ -f $DOWN ]
+	then
+		chmod +x $DOWN && chmod 755 $DOWN && eval $DOWN;
+	fi
+
 	exit
 }
 
-trap dump SIGTERM
+trap down SIGTERM
 
 /usr/bin/mysqld_safe --skip-syslog > /dev/null 2>&1 & wait
