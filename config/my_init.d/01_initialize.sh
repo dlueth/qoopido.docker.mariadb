@@ -1,29 +1,21 @@
 #!/bin/bash
 
-UP="/app/config/up.sh"
-
-if [ -d /app/config ]
-then
-	files=($(find /app/config -type f))
-
-	for source in "${files[@]}"
-	do
-		pattern="\.DS_Store"
-		target=${source/\/app\/config/\/etc\/mysql}
-
-		if [[ ! $target =~ $pattern ]]; then
-			if [[ -f $target ]]; then
-				echo "    Removing \"$target\"" && rm -rf $target
-			fi
-
-			echo "    Linking \"$source\" to \"$target\"" && mkdir -p $(dirname "${target}") && ln -s $source $target
-		fi
-	done
-fi
-
 mkdir -p /app/data/logs
 mkdir -p /app/data/database
 mkdir -p /app/config
+
+FILES=($(find /app/config -type f \( -not -name ".DS_Store" \)))
+
+for source in "${FILES[@]}"
+do
+	target=${source/\/app\/config/\/etc\/mysql}
+
+	if [[ -f $target ]]; then
+		echo "    Removing \"$target\"" && rm -rf $target
+	fi
+
+	echo "    Linking \"$source\" to \"$target\"" && mkdir -p $(dirname "${target}") && ln -s $source $target
+done
 
 if [[ ! -f /app/data/database/dump.sql ]]; then
 	echo "    Initializing new database"
@@ -61,15 +53,3 @@ else
 	
 	echo "    successfully imported existing database"
 fi
-
-if [ -f $UP ]
-then
-	echo "    Running startup script /app/config/up.sh"
-	chmod +x $UP && chmod 755 $UP && eval $UP;
-fi
-
-# Tweaks to give MySQL write permissions to the app
-# chown -R mysql:staff /var/lib/mysql
-# chown -R mysql:staff /var/run/mysqld
-# chmod -R 770 /var/lib/mysql
-# chmod -R 770 /var/run/mysqld
