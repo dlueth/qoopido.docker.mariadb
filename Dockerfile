@@ -1,4 +1,4 @@
-FROM qoopido/base:latest
+FROM qoopido/base:1.0.3
 MAINTAINER Dirk Lüth <info@qoopido.com>
 
 # Initialize environment
