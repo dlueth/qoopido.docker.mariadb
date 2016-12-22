@@ -66,21 +66,10 @@ down()
 {
 	echo "    Exporting existing database"
 
-	/usr/bin/mysqld_safe --skip-syslog --skip-networking > /dev/null 2>&1 &
-
-	RET=1
-	while [[ RET -ne 0 ]]; do
-		sleep 1
-		/usr/bin/mysql -uroot -e "status" > /dev/null 2>&1
-		RET=$?
-	done
-
 	/usr/bin/mysqldump -uroot --hex-blob --routines --triggers --all-databases > /tmp/mariadb.sql \
 		&& rm -rf /app/data/database/dump.sql \
 		&& cp --no-preserve=mode /tmp/mariadb.sql /app/data/database/dump.sql \
 		&& rm -rf /tmp/mariadb.sql
-
- 	/usr/bin/mysqladmin -uroot shutdown
 
  	echo "    successfully exported existing database"
 
